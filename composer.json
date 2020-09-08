@@ -1,24 +1,13 @@
 {
-    "name": "zizaco/entrust",
+    "name": "cevv13/entrust",
     "description": "This package provides a flexible way to add Role-based Permissions to Laravel",
     "keywords": ["laravel","illuminate","auth","roles","acl","permission"],
     "license": "MIT",
     "authors": [
         {
-            "name": "Zizaco Zizuini",
-            "email": "zizaco@gmail.com"
-        },
-        {
-            "name": "Andrew Elkins",
-            "homepage": "http://andrewelkins.com"
-        },
-        {
-            "name": "Ben Batschelet",
-            "homepage": "http://github.com/bbatsche"
-        },
-        {
-            "name": "Michele Angioni",
-            "email": "michele.angioni@gmail.com"
+            "name": "Carlos Villarroel",
+            "email": "cevv13@hotmail.com",
+            "role": "Developer"
         }
     ],
     "require": {
@@ -38,7 +27,7 @@
             "src/commands"
         ],
         "psr-4": {
-            "Zizaco\\Entrust\\": "src/Entrust/"
+            "Cevv13\\Entrust\\": "src/Entrust/"
         }
     },
     "autoload-dev": {
