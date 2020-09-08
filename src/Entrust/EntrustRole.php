@@ -1,15 +1,15 @@
-<?php namespace Zizaco\Entrust;
+<?php namespace Cevv13\Entrust;
 
 /**
  * This file is part of Entrust,
  * a role & permission management solution for Laravel.
  *
  * @license MIT
- * @package Zizaco\Entrust
+ * @package Cevv13\Entrust
  */
 
-use Zizaco\Entrust\Contracts\EntrustRoleInterface;
-use Zizaco\Entrust\Traits\EntrustRoleTrait;
+use Cevv13\Entrust\Contracts\EntrustRoleInterface;
+use Cevv13\Entrust\Traits\EntrustRoleTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
 

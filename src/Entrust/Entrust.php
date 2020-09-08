@@ -1,11 +1,11 @@
-<?php namespace Zizaco\Entrust;
+<?php namespace Cevv13\Entrust;
 
 /**
  * This class is the main entry point of entrust. Usually this the interaction
  * with this class will be done through the Entrust Facade
  *
  * @license MIT
- * @package Zizaco\Entrust
+ * @package Cevv13\Entrust
  */
 
 class Entrust
