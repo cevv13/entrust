@@ -22,23 +22,68 @@ trait EntrustUserTrait
         return Cache::tags(Config::get('entrust.role_user_table'))->remember($cacheKey, Config::get('cache.ttl'), function () {
             return $this->roles()->get();
         });
+
+        /*
+        if(Cache::getStore() instanceof TaggableStore) {
+            return Cache::tags(Config::get('entrust.role_user_table'))->remember($cacheKey, Config::get('cache.ttl'), function () {
+                return $this->roles()->get();
+            });
+        }
+        else return $this->roles()->get();
+        */
     }
+
+    public function cachedPerms()
+    {
+        $userPrimaryKey = $this->primaryKey;
+        $cacheKey = 'entrust_perms_for_user_'.$this->$userPrimaryKey;
+
+        return Cache::tags(Config::get('entrust.user_permission_table'))->remember($cacheKey, Config::get('cache.ttl'), function () {
+            return $this->perms()->get();
+        });
+
+        /*
+        if(Cache::getStore() instanceof TaggableStore) {
+            return Cache::tags(Config::get('entrust.user_permission_table'))->remember($cacheKey, Config::get('cache.ttl'), function () {
+                return $this->perms()->get();
+            });
+        }
+        else return $this->perms()->get();
+        */
+    }
+
+
     public function save(array $options = [])
     {   //both inserts and updates
         $result = parent::save($options);
         Cache::tags(Config::get('entrust.role_user_table'))->flush();
+
+        Cache::tags(Config::get('entrust.user_permission_table'))->flush();
+
+        /*  // code custom ori
+        if (Cache::getStore() instanceof TaggableStore){
+            Cache::tags(Config::get('entrust.user_permission_table'))->flush();
+        }
+        */
+
         return $result;
     }
     public function delete(array $options = [])
     {   //soft or hard
         $result = parent::delete($options);
         Cache::tags(Config::get('entrust.role_user_table'))->flush();
+
+        Cache::tags(Config::get('entrust.user_permission_table'))->flush();
+
         return $result;
     }
     public function restore()
     {   //soft delete undo's
         $result = parent::restore();
         Cache::tags(Config::get('entrust.role_user_table'))->flush();
+
+        Cache::tags(Config::get('entrust.user_permission_table'))->flush();
+
         return $result;
     }
     
@@ -51,6 +96,22 @@ trait EntrustUserTrait
     {
         return $this->belongsToMany(Config::get('entrust.role'), Config::get('entrust.role_user_table'), Config::get('entrust.user_foreign_key'), Config::get('entrust.role_foreign_key'));
     }
+
+
+
+
+    /**
+     * Many-to-Many relations with Permission.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function perms()
+    {
+        return $this->belongsToMany(Config::get('entrust.permission'), Config::get('entrust.user_permission_table'), 'user_id', 'permission_id');
+    }
+
+
+
 
     /**
      * Boot the user model
@@ -66,6 +127,8 @@ trait EntrustUserTrait
         static::deleting(function($user) {
             if (!method_exists(Config::get('auth.model'), 'bootSoftDeletes')) {
                 $user->roles()->sync([]);
+
+                $user->perms()->sync([]);
             }
 
             return true;
@@ -108,6 +171,24 @@ trait EntrustUserTrait
         return false;
     }
 
+
+
+    /**
+     * Checks if the user has a permission by its name.
+     *
+     * @param string|array $name       Permission name or array of permission names.
+     * @param bool         $requireAll All permissions in the array are required.
+     *
+     * @return bool
+     */
+    public function hasPermission($permission,$requireAll=false)
+    {
+        return $this->can($permission,$requireAll);
+    }
+
+
+
+
     /**
      * Check if user has a permission by its name.
      *
@@ -142,6 +223,14 @@ trait EntrustUserTrait
                     }
                 }
             }
+
+
+            foreach ($this->cachedPerms() as $perm) {
+                if (str_is($permission,$perm->name)) {
+                    return true;
+                }
+            }
+
         }
 
         return false;
@@ -279,4 +368,99 @@ trait EntrustUserTrait
         }
     }
 
-}
+
+
+
+
+
+
+
+    /**
+     *Filtering users according to their role
+     *
+     *@param string $role
+     *@return users collection
+     */
+    public function scopeWithRole($query, $role)
+    {
+        return $query->whereHas('roles', function ($query) use ($role)
+        {
+            $query->where('name', $role);
+        });
+    }
+
+    /**
+     * Alias to eloquent many-to-many relation's attach() method.
+     *
+     * @param mixed $permission
+     */
+    public function attachPermission($permission)
+    {
+        if(is_object($permission)) {
+            $permission = $permission->getKey();
+        }
+
+        if(is_array($permission)) {
+            $permission = $permission['id'];
+        }
+
+        $this->perms()->attach($permission);
+    }
+    /**
+     * Alias to eloquent many-to-many relation's detach() method.
+     *
+     * @param mixed $permission
+     */
+    public function detachPermission($permission)
+    {
+        if(is_object($permission)) {
+            $permission = $permission->getKey();
+        }
+
+        if(is_array($permission)) {
+            $permission = $permission['id'];
+        }
+
+        $this->perms()->detach($permission);
+    }
+    /**
+     * Attach multiple perms to a user
+     *
+     * @param mixed $permissions
+     */
+    public function attachPermissions(array $permissions)
+    {
+        foreach ($permissions as $permission) {
+            $this->attachPermission($permission);
+        }
+    }
+    /**
+     * Detach multiple perms to a user
+     *
+     * @param mixed $permissions
+     */
+    public function detachPermissions($permissions=null)
+    {
+        if (!$permissions) $permissions = $this->perms()->get();
+
+        foreach ($permissions as $permission) {
+            $this->detachPermission($permission);
+        }
+    }
+
+    /**
+     * Filtering users according to their permission
+     *
+     * @param string $permission
+     * @return users collection
+     */
+    public function scopeWithPermission($query, $permission)
+    {
+        return $query->whereHas('permissions', function ($query) use ($permission)
+        {
+            $query->where('name', $permission);
+        });
+    }
+
+
+}  // end trait

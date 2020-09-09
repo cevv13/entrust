@@ -89,4 +89,18 @@ return [
     */
     'role_foreign_key' => 'role_id',
 
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Entrust user_permission Table
+    |--------------------------------------------------------------------------
+    |
+    | This is the user_permission table used by Entrust to save assigned
+    | permissions to the database.
+    |
+    */
+    'user_permission_table'=>'user_permission'
+
+
 ];

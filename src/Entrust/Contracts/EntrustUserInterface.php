@@ -80,6 +80,10 @@ interface EntrustUserInterface
 
 
 
+    /**
+     |  nuevo metodos para asignar permisos a usuarios
+     */
+
 
     /**
      * Alias to eloquent many-to-many relation's attach() method.

@@ -12,6 +12,8 @@ class EntrustSetupTables extends Migration
      */
     public function up()
     {
+        DB::beginTransaction();
+
         // Create table for storing roles
         Schema::create('{{ $rolesTable }}', function (Blueprint $table) {
             $table->increments('id');
@@ -55,6 +57,21 @@ class EntrustSetupTables extends Migration
 
             $table->primary(['permission_id', 'role_id']);
         });
+
+        // Create table for associating permissions to users (Many-to-Many)
+        Schema::create('{{ $userPermissionTable }}', function (Blueprint $table) {
+            $table->integer('user_id')->unsigned();
+            $table->integer('permission_id')->unsigned();
+
+            $table->foreign('user_id')->references('id')->on('{{ $usersTable }}')
+            ->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('permission_id')->references('id')->on('{{ $permissionsTable }}')
+            ->onUpdate('cascade')->onDelete('cascade');
+
+            $table->primary(['user_id', 'permission_id']);
+        });
+
+        DB::commit();
     }
 
     /**
@@ -68,5 +85,6 @@ class EntrustSetupTables extends Migration
         Schema::drop('{{ $permissionsTable }}');
         Schema::drop('{{ $roleUserTable }}');
         Schema::drop('{{ $rolesTable }}');
+        Schema::drop('{{ $userPermissionTable }}');
     }
 }
