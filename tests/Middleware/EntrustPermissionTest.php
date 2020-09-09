@@ -1,6 +1,6 @@
 <?php
 
-use Zizaco\Entrust\Middleware\EntrustPermission;
+use Cevv13\Entrust\Middleware\EntrustPermission;
 use Mockery as m;
 
 class EntrustPermissionTest extends MiddlewareTest
