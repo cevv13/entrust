@@ -119,7 +119,7 @@ After the migration, four new tables will be present:
 Create a Role model inside `app/models/Role.php` using the following example:
 
 ```php
-<?php namespace App;
+<?php namespace App\Models;
 
 use Cevv13\Entrust\EntrustRole;
 
@@ -140,7 +140,7 @@ Both `display_name` and `description` are optional; their fields are nullable in
 Create a Permission model inside `app/models/Permission.php` using the following example:
 
 ```php
-<?php namespace App;
+<?php namespace App\Models;
 
 use Cevv13\Entrust\EntrustPermission;
 
