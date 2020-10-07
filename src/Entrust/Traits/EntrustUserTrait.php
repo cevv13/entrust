@@ -10,6 +10,7 @@
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Str;
 use InvalidArgumentException;
 
 trait EntrustUserTrait
@@ -86,7 +87,7 @@ trait EntrustUserTrait
 
         return $result;
     }
-    
+
     /**
      * Many-to-Many relations with Role.
      *
@@ -218,7 +219,7 @@ trait EntrustUserTrait
             foreach ($this->cachedRoles() as $role) {
                 // Validate against the Permission table
                 foreach ($role->cachedPermissions() as $perm) {
-                    if (str_is( $permission, $perm->name) ) {
+                    if (Str::is( $permission, $perm->name) ) {
                         return true;
                     }
                 }
@@ -226,7 +227,7 @@ trait EntrustUserTrait
 
 
             foreach ($this->cachedPerms() as $perm) {
-                if (str_is($permission,$perm->name)) {
+                if (Str::is($permission,$perm->name)) {
                     return true;
                 }
             }
@@ -362,7 +363,7 @@ trait EntrustUserTrait
     public function detachRoles($roles=null)
     {
         if (!$roles) $roles = $this->roles()->get();
-        
+
         foreach ($roles as $role) {
             $this->detachRole($role);
         }
