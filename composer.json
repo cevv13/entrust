@@ -1,7 +1,7 @@
 {
     "name": "cevv13/entrust",
     "description": "This package provides a flexible way to add Role-based Permissions to Laravel",
-    "keywords": ["laravel","illuminate","auth","roles","acl","permission"],
+    "keywords": ["laravel","illuminate","auth","roles","acl","permission", "cevv13"],
     "license": "MIT",
     "authors": [
         {
@@ -11,7 +11,7 @@
         }
     ],
     "require": {
-        "php": ">=5.5.0",
+        "php": ">=7.2.5",
         "illuminate/console": "^7|^8",
         "illuminate/support": "^7|^8",
         "illuminate/cache": "^7|^8"

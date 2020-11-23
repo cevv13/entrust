@@ -100,7 +100,18 @@ return [
     | permissions to the database.
     |
     */
-    'user_permission_table'=>'user_permission'
+    'user_permission_table'=>'user_permission',
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | Entrust permission foreign key
+    |--------------------------------------------------------------------------
+    |
+    | This is the permission foreign key used by Entrust to make a proper
+    | relation between permissions and roles
+    |
+    */
+    'permission_foreign_key' => 'permission_id',
 
 ];
