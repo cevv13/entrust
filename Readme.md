@@ -111,6 +111,7 @@ After the migration, four new tables will be present:
 - `permissions` &mdash; stores permission records
 - `role_user` &mdash; stores [many-to-many](http://laravel.com/docs/4.2/eloquent#many-to-many) relations between roles and users
 - `permission_role` &mdash; stores [many-to-many](http://laravel.com/docs/4.2/eloquent#many-to-many) relations between roles and permissions
+- `user_permission` &mdash; stores [many-to-many](http://laravel.com/docs/4.2/eloquent#many-to-many) relations between users and permissions
 
 ### Models
 
@@ -174,6 +175,35 @@ class User extends Eloquent
 ```
 
 This will enable the relation with `Role` and add the following methods `roles()`, `hasRole($name)`, `withRole($name)`, `can($permission)`, and `ability($roles, $permissions, $options)` within your `User` model.
+
+
+#### User Permissions  (optional)
+
+Create a UserPermissions model inside `app/UserPermissions.php` using the following example:
+
+```php
+<?php namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+
+class UserPermissions extends Model
+{
+    protected $guarded = [];
+
+    public function permission()
+    {
+        return $this->belongsToMany(Permission::class, 'id', 'permission_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsToMany(User::class, 'id', 'user_id');
+    }
+}
+
+```
+
+
 
 Don't forget to dump composer autoload
 
