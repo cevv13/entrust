@@ -162,7 +162,7 @@ In general, it may be helpful to think of the last two attributes in the form of
 Next, use the `EntrustUserTrait` trait in your existing `User` model. For example:
 
 ```php
-<?php
+<?php namespace App\Models;
 
 use Cevv13\Entrust\Traits\EntrustUserTrait;
 
@@ -182,7 +182,7 @@ This will enable the relation with `Role` and add the following methods `roles()
 Create a UserPermissions model inside `app/UserPermissions.php` using the following example:
 
 ```php
-<?php namespace App;
+<?php namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
